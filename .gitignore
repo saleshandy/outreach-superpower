@@ -1,0 +1,7 @@
+# Workspace artifacts (user data, never commit)
+outreach-workspace/
+.DS_Store
+
+# Test transcripts (recreated each run)
+tests/transcripts/*
+!tests/transcripts/.gitkeep
