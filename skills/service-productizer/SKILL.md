@@ -24,11 +24,13 @@ All file reads/writes happen in `outreach-workspace/<campaign>/`.
 
 Read `outreach-workspace/<campaign>/company.md`. Extract the service list from the `Services / products` section (each sub-bullet is one service, in the form `<name>: <one-line description>`).
 
-If `company.md` is missing, announce the auto-chain explicitly:
+**Parsing rule:** split each sub-bullet on the FIRST colon. Everything before is the service name; everything after is the description. If no colon, treat the whole line as the name with empty description. Examples that work:
+- `SEO: link-building campaigns (DR 50+ targets)` -> name: `SEO`, description: `link-building campaigns (DR 50+ targets)`
+- `Podcast production` -> name: `Podcast production`, description: empty
 
-> *No `company.md` found. Running `strategy-architect` first to extract services from your website, then resuming.*
+If `company.md` is missing -> announce: *"No `company.md` found in workspace. I need a website extracted first. Run `strategy-architect` with the user's website URL (or paste their homepage), then return here once `company.md` exists. I'll wait."*
 
-Invoke `strategy-architect` with whatever context the user already provided (URL, pasted content, vertical hint). After it completes and writes `company.md`, return here and continue at Step 2.
+This is an explicit handoff, not a direct invoke. Claude handles the routing via the `using-saleshandy-superpowers` router skill: it detects the announcement, runs strategy-architect, then resumes service-productizer once `company.md` is written.
 
 If `company.md` exists but the `Services / products` section is empty or absent, ask the user to paste their service list (one per line) before continuing.
 
@@ -50,7 +52,13 @@ Wait for the user's pick before moving to Step 3.
 
 For the chosen service, generate the following six items. No fluff, no broad claims. Numbers beat adjectives.
 
-**A) Offer Name** - generate 3 specific, marketable candidates (e.g., *"30-Day Pipeline Jumpstart"*, *"Inbox-Ready LinkedIn SDR"*, *"AI Hiring Sprint"*). Ask the user to pick one or refine.
+**A) Offer Name** - generate 3 specific, marketable candidates. Examples (template only - generate names that fit the user's industry):
+- *"30-Day Pipeline Jumpstart"* (SaaS / B2B services)
+- *"Inbox-Ready LinkedIn SDR"* (sales)
+- *"Quarterly Compliance Review"* (legal / finance / regulated industries)
+- *"AI Hiring Sprint"* (HR tech)
+
+Ask user to pick or refine.
 
 **B) Outcome-Based One-Liner** - *"We help [ICP] get [specific result] in [timeframe] without [objection]."* Generate this from the service description and any customer outcomes already in `company.md`.
 
@@ -65,23 +73,24 @@ For the chosen service, generate the following six items. No fluff, no broad cla
 
 **F) Proof Point** - ask the user for a case study, testimonial, or client win for this specific service. If none, mark `[NEEDED]` in the file and proceed without blocking.
 
-**Custom-service handling.** If the user picked a service that wasn't in the extracted `company.md` list, ask 3 follow-up questions before generating A-F:
-
-> 1. What measurable outcome does this service deliver to clients?
-> 2. What's the typical engagement length and format?
-> 3. Who's the ideal client (size / industry / role)?
+**Custom-service handling.** For custom services not in `company.md`, ask 4 follow-up questions before generating A-F:
+- *"What measurable outcome does this service deliver to clients?"*
+- *"What's the typical engagement length and format?"*
+- *"Who's the ideal client (size / industry / role)?"*
+- *"How does this differ from what clients could do in-house or with a competitor?"*
 
 Use those answers as inputs to A-F.
 
 ### Step 4 - Define ICP for *this offer*
 
-Lighter-weight than full `icp-builder`. Ask 4 questions. One per message is fine but bundling is acceptable here since the offer-specific ICP is meant to be quick:
+Lighter-weight than full `icp-builder`. Ask 5 questions. One per message is fine but bundling is acceptable here since the offer-specific ICP is meant to be quick:
 
 > *For this offer specifically:*
 > 1. What company size + type fits best?
 > 2. Industry vertical(s)?
 > 3. Target persona / job title?
 > 4. What pain or trigger event makes them buy now?
+> 5. Who's a bad fit? (1-2 disqualifiers - who shouldn't buy this)
 
 If `icp.md` exists with `source: icp-builder-interview`, pre-fill suggested answers from the existing ICP's primary segment and let the user confirm or override.
 
@@ -96,9 +105,12 @@ Frontmatter:
 service: <selected service>
 offer_name: "<Name>"
 generated_at: YYYY-MM-DD
-icp_buying_motion: self-serve | demo | both
+icp_source: appended-to-icp.md | embedded-only
+icp_buying_motion: <copy from icp.md if appended; else from Step 4 answers>
 ---
 ```
+
+Note: *"`icp_source: appended-to-icp.md` means the offer's segment was added to icp.md and is the canonical source - read from icp.md frontmatter for `buying_motion`. `embedded-only` means no icp.md existed; offer's ICP is in this file's body."*
 
 Body sections:
 
@@ -118,6 +130,23 @@ Body sections:
 - If it already exists, ask once: *"Existing `productized-offer.md` found. (a) overwrite, (b) version (move existing to `productized-offer.v1.md`), or (c) keep existing and abort?"* Default to (b) on no answer.
 
 **Append to existing `icp.md` (don't overwrite).** If `icp.md` exists in the workspace:
+
+**Mapping the 4 Step-4 answers to icp-builder's 9-row segment card:**
+
+| icp-builder segment card row | Source |
+|---|---|
+| Segment name | Generated from offer name + persona (e.g., "Mid-market SaaS VPs - Pipeline Jumpstart") |
+| Firmographics | Step 4.1 (company size + type) + Step 4.2 (industry) |
+| Technographics | `[NEEDED]` if not in `company.md` |
+| Common pain | Step 4.4 (pain or trigger event) |
+| Trigger events | Step 4.4 (trigger event component); split if Step 4.4 included both |
+| Messaging angle | Generated from offer's outcome one-liner (Step 3B) |
+| Objections + counters | `[NEEDED]` (run `icp-builder` to fill) |
+| Disqualifiers | Step 4.5 (1-2 disqualifiers) |
+| Example titles to target | Step 4.3 (target persona / job title) - single title; expand via icp-builder later |
+
+Append the segment card with `[NEEDED]` markers for fields the lite ICP doesn't cover. Footer the appended section with: *"For full segment depth, run `icp-builder` to fill `[NEEDED]` fields."*
+
 - Append the offer-specific ICP as a NEW segment card at the end of the Segment Cards section (using the same table schema icp-builder uses).
 - Do NOT modify or overwrite existing segments.
 - Increment the `segments:` count in `icp.md` frontmatter by 1.
@@ -131,8 +160,6 @@ Output:
 
 > *Offer saved to `productized-offer.md`. Want me to draft a 3-email cold sequence for this offer? (y/n)*
 
-If the user replies **yes** (or any clear affirmative), invoke `email-sequence-generator` with `goal: lead-gen` and the segment derived from this offer's ICP. Pass the offer name and outcome one-liner so the sequence's hook reflects the productized offer rather than the raw service.
+If **yes** -> announce: *"Handing off to `email-sequence-generator` with `goal: lead-gen` and segment '<offer name>'. Reading `productized-offer.md` and `icp.md` for context."* The router will load email-sequence-generator on the next turn.
 
-If the user replies **no** (or any clear decline), respect it. Do NOT invoke `email-sequence-generator`. End with:
-
-> *Offer ready. Run `email-sequence-generator` whenever you want sequences.*
+If **no** -> end with: *"Offer ready. Run `email-sequence-generator` whenever you want sequences."*
