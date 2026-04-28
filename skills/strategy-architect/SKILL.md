@@ -37,6 +37,13 @@ Use WebFetch on (in priority order, stop at first failure or 6 pages):
 5. `/security` or `/compliance`
 6. `/blog` (recent post titles only - for trend signals)
 
+**Failure handling per page:**
+- Treat as failure for that page: HTTP 4xx/5xx, fetch returns no extractable content, fetch times out (>20s), or response is an interstitial (Cloudflare challenge, bot block detected via missing expected content patterns).
+- Skip the failing page and continue with remaining pages.
+- If the **homepage** specifically fails, abort the fetch loop and request paste of homepage content (homepage is required).
+- If 2+ secondary pages fail, proceed with what you have. Note in `company.md` body which pages were unavailable. Only request paste for missing high-signal pages (e.g., customers/case-studies, if no proof points were extracted from other pages).
+- Set `source: mixed` in `company.md` frontmatter when both fetched and pasted content contributed.
+
 If WebFetch is unavailable or repeatedly fails: ask the user to paste home + customers/case-studies page text. Note `source: manual-paste` (or `mixed` if some pages fetched and others pasted) in `company.md` frontmatter.
 
 ### Step 3 - Extract these 10 items
@@ -77,11 +84,28 @@ Proceed with these? (yes / proceed with assumptions / make edits #1, #4...)
 
 Parse edits in the form `#<n>: <new value>` (also accept `<n>:`, `item <n>`, `change <n> to`). Apply each edit to the corresponding item, then re-display the full updated card and ask again: *"Proceed with these? (yes / proceed with assumptions / make edits #1, #4...)"*
 
+Also accept:
+- `delete #<n>` or `remove #<n>` → replace value with `[REMOVED]`
+- `add to #<n>: <text>` → append rather than replace
+- Comma- or newline-separated multi-edits in one reply: `#1: foo, #4: bar`
+- For rearrangement (`swap #2 with #3`), DON'T guess. Ask: *"Want to restate the card with the new order?"*
+
 Loop until the user types `yes`, `all good`, or `proceed with assumptions`.
 
 ### Step 6 - Write workspace files
 
-Write all three files to `outreach-workspace/<campaign>/`. If files already exist, ask before overwriting.
+Write all three files to `outreach-workspace/<campaign>/`.
+
+**Existing-files handling:**
+- `company.md` and `strategy.md`: if they already exist, ask once: *"Existing strategy files found. (a) overwrite, (b) version (move existing to `.v1.md`), or (c) merge edits into existing?"* Default to (b) on no answer.
+- `icp.md`: NEVER overwrite if frontmatter shows `version: v2` OR `source: icp-builder-interview` (those are tightened ICPs from icp-builder; preserve them). If only the lite `source: strategy-architect-lite` exists, version it (move to `icp.lite.v1.md`) and write fresh lite.
+
+**Confidence flag rules** (set in `company.md` frontmatter):
+- `high`: 5+ pages fetched cleanly, all 10 confirmation card items extracted without `[ASSUMPTION]` labels.
+- `medium`: 3-4 pages fetched, OR 1-3 of the 10 items are `[ASSUMPTION]` labeled.
+- `low`: homepage-only fetch, OR 4+ items are `[ASSUMPTION]` labeled, OR all content was pasted by user.
+
+`icp-builder` reads this to decide whether to skip pre-filled answers (`high`/`medium` → confirm, `low` → re-ask from scratch).
 
 **`company.md`:**
 
@@ -93,10 +117,14 @@ extracted_at: YYYY-MM-DD
 confidence: high | medium | low
 ---
 # <Company Name>
+<!-- Values may be tagged [ASSUMPTION] when inferred. -->
 - Industry: ...
 - Size band: ...
 - Value prop: ...
-- Services / products: ...
+- Services / products:
+  - <name>: <one-line description>
+  - <name>: <one-line description>
+  (one bullet per service; values may be tagged [ASSUMPTION] when inferred)
 - Differentiators: ...
 - Proof points: ...
 - Constraints: ...
