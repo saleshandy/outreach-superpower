@@ -25,11 +25,13 @@ On first invocation in a session, output one line:
 
 | User intent / phrase | Skill |
 |---|---|
-| "build/define ICP", "who should I target", "tighten my ICP" | icp-builder |
-| "outreach strategy", "audit my website", "extract from my site" | strategy-architect |
-| "productize my service", "package my agency offering" | service-productizer |
-| "write cold email sequence", "draft a cadence", "X-email campaign" | email-sequence-generator |
-| "audit/review/rate this email" or pasted email body | email-auditor |
+| "build/define ICP", "who should I target", "who is my ICP", "tighten my ICP", "who should I email" | icp-builder |
+| "outreach strategy", "audit my website for outreach", "extract from my site", "build a campaign from URL" | strategy-architect |
+| "productize my service", "package my agency offering", "turn my service into a product" | service-productizer |
+| "write cold email sequence", "draft a cadence", "X-email campaign", "follow-up sequence", "outreach emails" | email-sequence-generator |
+| "audit/review/rate this email", "score my email", "is this email good", or pasted email body | email-auditor |
+
+*Note: "audit" alone is ambiguous - if the user pastes email copy, route to `email-auditor`; if they reference a website URL or company, route to `strategy-architect`; if neither signal, ask which they meant.*
 
 ## Auto-chaining rules
 
@@ -46,6 +48,20 @@ Before invoking a skill, check its prerequisites against the workspace. If a req
 When auto-chaining, announce it:
 
 > *No `icp.md` found. Running `icp-builder` first, then resuming `email-sequence-generator`.*
+
+### Downstream chains (suggested next skill)
+
+Some skills end by offering to invoke the next skill in a typical workflow:
+
+| Skill | Suggests next |
+|---|---|
+| strategy-architect | icp-builder OR email-sequence-generator |
+| icp-builder | email-sequence-generator |
+| service-productizer | email-sequence-generator |
+| email-sequence-generator | email-auditor (audit the draft) |
+| email-auditor | (none - terminal) |
+
+When a sub-skill ends, it should output a one-liner like: *"Recommended next: run `email-sequence-generator` to draft a sequence."* The user accepts or declines.
 
 ## The 4 rules every sub-skill obeys
 
