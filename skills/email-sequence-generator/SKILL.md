@@ -15,7 +15,7 @@ Generate a 3-7 email cold sequence with merge tags and spintext, formatted for p
 
 ## Workspace path
 
-Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-saleshandy-superpowers`.
+Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-outreach-superpower`.
 
 All file reads/writes happen in `outreach-workspace/<campaign>/`.
 
@@ -43,7 +43,7 @@ Note in `sequence.md` body: *"Angles generated inline (no Angle Kit found in icp
 
 If `icp.md` is missing -> announce handoff: *"No `icp.md` in workspace. I need an ICP first. Run `icp-builder` to define your target segments, then return here. I'll wait."* Stop.
 
-This is an explicit handoff, not a direct invoke. Claude handles the routing via the `using-saleshandy-superpowers` router skill: it detects the announcement, runs icp-builder, then resumes email-sequence-generator once `icp.md` is written.
+This is an explicit handoff, not a direct invoke. Claude handles the routing via the `using-outreach-superpower` router skill: it detects the announcement, runs icp-builder, then resumes email-sequence-generator once `icp.md` is written.
 
 ### Step 2 - Ask: goal
 

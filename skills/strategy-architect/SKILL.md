@@ -14,7 +14,7 @@ Pull all needed inputs from the user's website, confirm them briefly, then produ
 
 ## Workspace path
 
-Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-saleshandy-superpowers`.
+Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-outreach-superpower`.
 
 ## Process
 

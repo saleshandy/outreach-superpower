@@ -14,7 +14,7 @@ Audit pasted cold email copy across 7 dimensions, rate each 1-5, output strength
 
 ## Workspace path
 
-Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-saleshandy-superpowers`.
+Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-outreach-superpower`.
 
 ## Process
 

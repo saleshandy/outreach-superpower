@@ -14,7 +14,7 @@ Run a structured 14-step interview to produce a cold-email-usable ICP. One quest
 
 ## Workspace path
 
-Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-saleshandy-superpowers`.
+Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-outreach-superpower`.
 
 All file reads/writes happen in `outreach-workspace/<campaign>/`.
 

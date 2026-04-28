@@ -14,7 +14,7 @@ Turn a raw service description into a productized offer with name, outcome, scop
 
 ## Workspace path
 
-Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-saleshandy-superpowers`.
+Default campaign: `default`. If user invocation includes `--campaign <name>`, use that. Full rule: see `using-outreach-superpower`.
 
 All file reads/writes happen in `outreach-workspace/<campaign>/`.
 
@@ -30,7 +30,7 @@ Read `outreach-workspace/<campaign>/company.md`. Extract the service list from t
 
 If `company.md` is missing -> announce: *"No `company.md` found in workspace. I need a website extracted first. Run `strategy-architect` with the user's website URL (or paste their homepage), then return here once `company.md` exists. I'll wait."*
 
-This is an explicit handoff, not a direct invoke. Claude handles the routing via the `using-saleshandy-superpowers` router skill: it detects the announcement, runs strategy-architect, then resumes service-productizer once `company.md` is written.
+This is an explicit handoff, not a direct invoke. Claude handles the routing via the `using-outreach-superpower` router skill: it detects the announcement, runs strategy-architect, then resumes service-productizer once `company.md` is written.
 
 If `company.md` exists but the `Services / products` section is empty or absent, ask the user to paste their service list (one per line) before continuing.
 

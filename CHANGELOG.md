@@ -3,13 +3,13 @@
 ## 0.1.0 - 2026-04-27
 
 ### Added
-- Router skill `using-saleshandy-superpowers` with auto-chaining and a 7-row routing decision table
+- Router skill `using-outreach-superpower` with auto-chaining and a 7-row routing decision table
 - `strategy-architect` - website-first outreach strategy extraction with 10-item confirmation card and WebFetch fallback to pasted content
 - `icp-builder` - 14-step ICP interview with v1/v2 versioning, tiered pre-fill from `company.md` (high/medium/low confidence), 3 segment cards, 5-angle Cold Email Angle Kit
 - `service-productizer` - turn services into productized offers with 6-component structure (Offer Name, Outcome, Scope, Timeline, Pricing, Proof) and 5-question lite ICP
 - `email-sequence-generator` - 3-7 email cold sequences with merge tags + spintext for Saleshandy, 8 goal types, buying-motion-aware CTA alternation, per-position word counts
 - `email-auditor` - 7-dimension audit (Subject, Opener, Body, CTA, Formatting, Personalization, Spam) with rewritten suggestions; context-aware when `icp.md` is present; dated audit history
-- File-based workspace at `./outreach-workspace/<campaign>/` with global fallback to `~/.saleshandy-superpowers/workspace/default/`
+- File-based workspace at `./outreach-workspace/<campaign>/` with global fallback to `~/.outreach-superpower/workspace/default/`
 - 6 E2E test scenarios + per-skill scenario tests for manual verification
 - User-facing docs: `README.md`, `docs/USAGE.md`, `docs/DEVELOPING.md`
 - MIT LICENSE

@@ -1,10 +1,10 @@
 # Usage Guide
 
-Per-skill examples and transcripts for `saleshandy-superpowers`. Skills are listed in the natural workflow order: router, strategy-architect, icp-builder, service-productizer, email-sequence-generator, email-auditor.
+Per-skill examples and transcripts for `outreach-superpower`. Skills are listed in the natural workflow order: router, strategy-architect, icp-builder, service-productizer, email-sequence-generator, email-auditor.
 
 Every skill reads and writes to `./outreach-workspace/<campaign>/`, where `<campaign>` defaults to `default`. Pass `--campaign acme` in your message to scope to a different folder.
 
-## using-saleshandy-superpowers (router)
+## using-outreach-superpower (router)
 
 The router is the only skill that auto-loads. You will never invoke it by name; it activates on outreach-related phrasing and decides which sub-skill to run.
 
@@ -27,7 +27,7 @@ You don't. The router fires automatically when you mention cold email, outreach,
 ```
 You: I want to write cold emails for my company https://acme.com
 
-Claude (router): Saleshandy Superpowers loaded. Routing to strategy-architect.
+Claude (router): Outreach Superpower loaded. Routing to strategy-architect.
                  Workspace: ./outreach-workspace/default/. Existing artifacts: none.
                  (strategy-architect now runs)
 ```

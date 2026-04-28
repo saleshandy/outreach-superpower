@@ -1,15 +1,15 @@
 # Developing
 
-For contributors extending `saleshandy-superpowers` with new skills, new channels, or workspace contract changes.
+For contributors extending `outreach-superpower` with new skills, new channels, or workspace contract changes.
 
 ## Plugin layout
 
 ```
-saleshandy-superpowers/
+outreach-superpower/
   .claude-plugin/
     plugin.json                  manifest (name, version, author, keywords)
   skills/
-    using-saleshandy-superpowers/
+    using-outreach-superpower/
       SKILL.md                   router; auto-loads on outreach intent
     strategy-architect/
       SKILL.md                   website -> company.md + strategy.md + lite icp.md
@@ -53,7 +53,7 @@ saleshandy-superpowers/
 
 3. Write the body following the existing skills' shape: Inputs, Workspace path, Process (numbered steps), and a final Cite step where the skill announces what it wrote and what to run next.
 4. Add a scenario file at `tests/scenarios/<skill-name>.md` with at least 3 cases: happy path, missing-prereq path, and one edge case (vague input, blocked fetch, existing-file overwrite, etc.).
-5. If the skill should auto-load on intent, update the router's routing table in `skills/using-saleshandy-superpowers/SKILL.md`. Add a row to:
+5. If the skill should auto-load on intent, update the router's routing table in `skills/using-outreach-superpower/SKILL.md`. Add a row to:
    - **Routing decision table**: map intent phrases to the new skill.
    - **Auto-chaining rules**: declare required and helpful prereqs.
    - **Downstream chains**: declare what skill the new one suggests next (or mark as terminal).
@@ -88,7 +88,7 @@ The same recipe works for `phone-script-generator`, `multichannel-sequence-gener
 
 The workspace is the only state shared between skills. Every file uses YAML frontmatter as a typed contract that downstream skills read without parsing the markdown body.
 
-For the canonical source, see `docs/plans/2026-04-27-saleshandy-superpowers-design.md` in the parent repo's design doc.
+For the canonical source, see `docs/plans/2026-04-27-outreach-superpower-design.md` in the parent repo's design doc.
 
 ### File summary
 

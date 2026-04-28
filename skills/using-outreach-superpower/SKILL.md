@@ -1,17 +1,17 @@
 ---
-name: using-saleshandy-superpowers
-description: Use when the user mentions cold email, outreach, prospecting, ICP, target audience, sales sequences, email copy review, productizing a service, or any SDR/AE workflow. Loads first to orient routing across the saleshandy-superpowers suite.
+name: using-outreach-superpower
+description: Use when the user mentions cold email, outreach, prospecting, ICP, target audience, sales sequences, email copy review, productizing a service, or any SDR/AE workflow. Loads first to orient routing across the outreach-superpower suite.
 ---
 
-# Saleshandy Superpowers - Router
+# Outreach Superpower - Router
 
-You are operating in the saleshandy-superpowers plugin. Before responding, identify the user's outreach intent, locate any existing workspace artifacts, and route to the precise sub-skill. Auto-chain prerequisites.
+You are operating in the outreach-superpower plugin. Before responding, identify the user's outreach intent, locate any existing workspace artifacts, and route to the precise sub-skill. Auto-chain prerequisites.
 
 ## Workspace location
 
 Default: `./outreach-workspace/<campaign>/` in the current working directory. `<campaign>` defaults to `default`.
 
-If the current dir is the user's home (`~`) or has no obvious project context, fall back to `~/.saleshandy-superpowers/workspace/default/`.
+If the current dir is the user's home (`~`) or has no obvious project context, fall back to `~/.outreach-superpower/workspace/default/`.
 
 If user passes `--campaign <name>` in their request, use that as the campaign folder.
 
@@ -19,7 +19,7 @@ If user passes `--campaign <name>` in their request, use that as the campaign fo
 
 On first invocation in a session, output one line:
 
-> *Saleshandy Superpowers loaded. Routing to `<skill>`. Workspace: `<path>`. Existing artifacts: <comma-separated filenames or "none">.*
+> *Outreach Superpower loaded. Routing to `<skill>`. Workspace: `<path>`. Existing artifacts: <comma-separated filenames or "none">.*
 
 ## Routing decision table
 

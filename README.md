@@ -1,10 +1,10 @@
-# Saleshandy Superpowers
+# Outreach Superpower
 
 A Claude Code plugin that turns a website URL into a paste-ready cold email sequence.
 
 ## What is it
 
-Cold outreach is slow because the inputs are scattered. You have a website, a vague sense of who to target, maybe a few past wins, and a blank Saleshandy campaign waiting to be filled. Saleshandy Superpowers is a set of six Claude Code skills that walks you from URL to ICP to a 4-email sequence in one session, persisting every artifact to a local workspace folder so each step builds on the last.
+Cold outreach is slow because the inputs are scattered. You have a website, a vague sense of who to target, maybe a few past wins, and a blank Saleshandy campaign waiting to be filled. Outreach Superpower is a set of six Claude Code skills that walks you from URL to ICP to a 4-email sequence in one session, persisting every artifact to a local workspace folder so each step builds on the last.
 
 The plugin ships six skills: a router that auto-loads on outreach intent, a strategy architect that extracts your value prop and segments from your website, an ICP builder that runs a 14-step interview, a service productizer that turns an agency offering into a packaged offer, an email sequence generator that drafts 3 to 7 emails with Saleshandy merge tags and spintext, and an email auditor that scores existing copy across 7 dimensions. All outputs go to markdown files you can edit, version, and reuse.
 
@@ -14,7 +14,7 @@ The plugin is not on the official Claude Code marketplace yet. Install via the s
 
 ```bash
 claude marketplace add github:saleshandy/outreach-superpower
-claude plugin install saleshandy-superpowers
+claude plugin install outreach-superpower
 ```
 
 Once installed, the router skill auto-loads whenever you mention cold email, outreach, ICP, or sales sequences in any Claude Code session.
@@ -35,7 +35,7 @@ Cold start, 5 minutes from URL to sequence:
 
 | Skill | When to use |
 |---|---|
-| `using-saleshandy-superpowers` | Auto-loads on outreach intent. You don't invoke it directly. |
+| `using-outreach-superpower` | Auto-loads on outreach intent. You don't invoke it directly. |
 | `strategy-architect` | New project, just have a website URL. |
 | `icp-builder` | Build or tighten your Ideal Customer Profile via the 14-step interview. |
 | `service-productizer` | Run a service business; turn a service into a productized offer. |
@@ -49,7 +49,7 @@ See `docs/USAGE.md` for full per-skill examples.
 Every skill reads from and writes to a single workspace folder. Defaults:
 
 - **Per-project (preferred):** `./outreach-workspace/<campaign>/` in your current working directory. `<campaign>` defaults to `default`.
-- **Global fallback:** `~/.saleshandy-superpowers/workspace/default/` if you're in your home directory or a folder with no obvious project context.
+- **Global fallback:** `~/.outreach-superpower/workspace/default/` if you're in your home directory or a folder with no obvious project context.
 - **Custom campaign:** add `--campaign acme` (or `acme-q2`, `client-name`, etc.) to scope outputs to a named folder. Useful when you run multiple campaigns side by side.
 
 Files inside a workspace:
