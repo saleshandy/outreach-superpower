@@ -6,8 +6,15 @@
 2. **No ICP.** Workspace empty. User: *"Generate a sequence."*
    - Expected: skill announces handoff to icp-builder. Router loads icp-builder, which runs full interview, writes icp.md, then resumes email-sequence-generator.
 
-3. **Goal coverage.** Run for each of 8 goals: book-demo, lead-gen, backlinks, recruitment, promotions, pr, partnership, nurture.
-   - Expected: each generates a goal-appropriate sequence (e.g., backlinks references the user's content; recruitment frames culture).
+3. **Goal coverage** (8 sub-scenarios - run as separate sessions; spot-check 2 if time-constrained).
+   - 3a. book-demo: sequence references product demo + calendar.
+   - 3b. lead-gen: sequence opens with pain point + ROI angle.
+   - 3c. backlinks: sequence references user's content + value exchange.
+   - 3d. recruitment: sequence frames culture + growth opportunity.
+   - 3e. promotions: sequence uses urgency + exclusive offer framing.
+   - 3f. pr: sequence pitches newsworthy angle + expert positioning.
+   - 3g. partnership: sequence proposes mutual benefit + roadmap.
+   - 3h. nurture: sequence delivers value-add content with progressive engagement.
 
 4. **Saleshandy syntax.** Generated sequence.md must contain `{First Name}`, `{Company}`, and at least one `{spin}A|B{endspin}` block per email.
 

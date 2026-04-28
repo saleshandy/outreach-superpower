@@ -25,9 +25,21 @@ All file reads/writes happen in `outreach-workspace/<campaign>/`.
 
 Read these files in order, citing each as you go:
 
-- `outreach-workspace/<campaign>/icp.md` (REQUIRED). Extract from frontmatter: `version`, `primary_segment`, `buying_motion`. From body: list of segments (3+), Angle Kit (5 angles).
+- `outreach-workspace/<campaign>/icp.md` (REQUIRED). Extract:
+  - From frontmatter: `version`, `primary_segment`, `buying_motion`, `segments` (count).
+  - From body: segment names by reading `# Segment: <name>` H1 headings (or `## Segment: <name>` H2 - accept either) under the Segment Cards section. The Angle Kit (5 angles) lives under a `# Cold Email Angle Kit` heading.
+  - **Parsing rule:** if multiple segment heading levels exist, prefer H2 first, then H1.
 - `outreach-workspace/<campaign>/company.md` (helpful). Extract: industry, value prop, services, differentiators, proof points (with metrics).
 - `outreach-workspace/<campaign>/productized-offer.md` (helpful, if present). Extract: offer name, outcome one-liner, scope.
+
+**Angle Kit fallback:** if `icp.md` exists but no Angle Kit section is found (e.g., user wrote icp.md by hand without running icp-builder), generate 5 angles inline before drafting emails:
+
+1. Pick the goal from Step 2.
+2. Pick the segment from Step 3.
+3. Use `company.md` differentiators + proof points + the segment's pain.
+4. Generate 5 angles in the format `Angle name | Subjects (3) | Openers (2) | CTAs (2)`. Display them in chat before generating sequence - gives user a chance to course-correct.
+
+Note in `sequence.md` body: *"Angles generated inline (no Angle Kit found in icp.md). Run `icp-builder` to write a persistent Angle Kit."*
 
 If `icp.md` is missing -> announce handoff: *"No `icp.md` in workspace. I need an ICP first. Run `icp-builder` to define your target segments, then return here. I'll wait."* Stop.
 
@@ -48,11 +60,25 @@ This is an explicit handoff, not a direct invoke. Claude handles the routing via
 >
 > Reply 1-8 or describe a custom goal.
 
-If `productized-offer.md` exists, default to goal 2 (lead-gen) and skip this question unless user overrides.
+If `productized-offer.md` exists, ask:
+
+> *Pitching `<offer_name>` as lead-gen (the typical goal for productized offers). Proceed (Enter), or pick a different goal (1-8)?*
 
 ### Step 3 - Ask: target segment
 
-List segments from `icp.md` body by name. User picks one (or types custom). Default to `primary_segment` from frontmatter if user just hits enter.
+List segments from `icp.md` body, marking the primary clearly:
+
+> *Pick a segment:*
+> 1. <Segment 1> [primary]
+> 2. <Segment 2>
+> 3. <Segment 3>
+> 4. <Productized offer's segment from productized-offer.md, if present>
+>
+> Reply with the number, or hit Enter to use the primary segment.
+
+**If `productized-offer.md` exists and its `icp_source: appended-to-icp.md`:** include its target segment in the picker (numbered after icp.md's segments).
+
+**Default behavior:** if user replies with empty input, use `primary_segment` from icp.md frontmatter.
 
 ### Step 4 - Ask: sequence length
 
@@ -65,17 +91,28 @@ List segments from `icp.md` body by name. User picks one (or types custom). Defa
 ### Step 5 - Generate sequence
 
 **Email design rules (strict):**
-- 150-250 words per email
+
+**Word count by position:**
+- **Email 1 (cold open):** 150-220 words (full value prop + problem framing)
+- **Email 2-3 (middle):** 120-180 words (proof, objection handling, why now)
+- **Email 4+ (bumps / final):** 50-100 words (short, punchy CTA)
+
+Last email in any sequence = "bump" length (50-100 words) regardless of total length, unless explicitly the only email after Email 1.
+
 - `{First Name}`, `{Company}`, `{Industry}`, `{Role}` merge tags (Saleshandy syntax)
-- At least one `{spin}A|B|C{endspin}` block per email - preferred: subject + opener + CTA each get a spin variant
 - Industry-specific terminology pulled from company.md
 - One CTA per email
 - Mobile-friendly formatting (short paragraphs, white space)
 
-**Sequence structure:**
-- **Email 1:** Value prop + problem identification
-- **Middle emails:** Social proof, educational content, objection handling, "why now"
-- **Final email:** Strong CTA with urgency
+**Spintext rules:**
+- **Minimum:** 1 `{spin}A|B{endspin}` block per email (anywhere - subject, opener, body, or CTA).
+- **Recommended:** spintext on subject + opener + CTA (3 blocks per email). Maximizes A/B coverage in Saleshandy.
+- **Format:** `{spin}variant A|variant B{endspin}` - Saleshandy picks one randomly per send.
+
+**Sequence structure** (Problem-Solution-Proof-CTA framework, applied progressively across the sequence):
+- **Email 1:** Problem identification + Solution preview (value prop)
+- **Middle emails (2-3):** Proof (metrics, social proof) + objection handling + "why now"
+- **Final email:** Strong CTA with urgency. Bump-style if length >= 4.
 
 **Per-goal hooks** - use these as the opening angle:
 
@@ -90,7 +127,13 @@ List segments from `icp.md` body by name. User picks one (or types custom). Defa
 | partnership | Mutual benefit + roadmap |
 | nurture | Value-add content |
 
-**Buying-motion adjustment:** if `icp.md` frontmatter shows `buying_motion: self-serve`, prefer low-commitment CTAs ("Try our free tool"). If `demo`, prefer "Open to a 15-min call?" If `both`, alternate across the sequence.
+**Buying-motion adjustment** (uses icp.md frontmatter `buying_motion`):
+
+| buying_motion | CTA pattern |
+|---|---|
+| `self-serve` | All emails: low-commitment CTAs (e.g., "Try our free tool," "Check the demo video") |
+| `demo` | All emails: 15-min call CTAs (e.g., "Open to a 15-min call?") |
+| `both` | Email 1, 3, 5: self-serve CTAs. Email 2, 4, 6, 7: demo CTAs. Final email always demo regardless of position. |
 
 **Productized-offer infusion:** if `productized-offer.md` is present, use the offer name in subject lines, reference the scope + outcome in body 1-2 emails, and default the final-email CTA to the offer's entry CTA.
 
