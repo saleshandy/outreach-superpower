@@ -10,12 +10,14 @@ The plugin ships six skills: a router that auto-loads on outreach intent, a stra
 
 ## Install
 
-The plugin is not on the official Claude Code marketplace yet. Install via the self-hosted GitHub source:
+The plugin is not on the official Claude Code marketplace yet. Install via the self-hosted GitHub source from any Claude Code session:
 
-```bash
-claude marketplace add github:saleshandy/outreach-superpower
-claude plugin install outreach-superpower
 ```
+/plugin marketplace add saleshandy/outreach-superpower
+/plugin install outreach-superpower@saleshandy
+```
+
+`/plugin marketplace add` accepts the `owner/repo` shorthand for public GitHub repos (no `github:` prefix or trailing `.git`). The marketplace registers itself as `saleshandy` (per `.claude-plugin/marketplace.json`), so the install target is `outreach-superpower@saleshandy`. Run `/plugin` after step 1 to browse and install from the menu instead, if you prefer.
 
 Once installed, the router skill auto-loads whenever you mention cold email, outreach, ICP, or sales sequences in any Claude Code session.
 
