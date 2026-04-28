@@ -37,10 +37,11 @@ Read the workspace before asking anything:
 - Else if `icp.md` exists with `source: strategy-architect-lite` (and `needs_tightening: true`) -> **lite-upgrade mode**: run the full v1 interview but pre-fill heavily from the lite ICP and `company.md`. On write, replace the lite file (move it to `icp.lite.v1.md` first) and set `source: icp-builder-interview`.
 - Else -> **fresh v1 interview**.
 
-Also read `company.md` if present. Note the `confidence` flag:
+Also read `company.md` if present. Note the `confidence` flag - it determines pre-fill scope (see the tiered Pre-fill rules table below):
 
-- `confidence: high` or `medium` -> Steps 1, 2, 5, 13 are pre-fillable. Show the pre-filled answer and ask only for confirmation ("Confirm or edit?").
-- `confidence: low` -> re-ask from scratch even if `company.md` has data; the extracted values aren't trustworthy.
+- `confidence: high` -> 7 steps pre-fillable (1, 2, 5, 6, 8, 9, 13). Show pre-filled answers; user confirms or edits each.
+- `confidence: medium` -> 4 steps pre-fillable (1, 2, 5, 13).
+- `confidence: low` -> re-ask all 14 from scratch; the extracted values aren't trustworthy.
 
 ### v1 interview (14 steps - preserve exactly)
 
@@ -70,16 +71,26 @@ The 14 questions:
 | 13 | Proof: what can you credibly claim? (results, logos, numbers) |
 | 14 | Where will you source leads? (Saleshandy/LinkedIn/CSV/etc.) |
 
-**Pre-fill rules** (when `company.md` exists with `confidence: high|medium`):
+**Pre-fill rules** (based on `company.md` `confidence` flag):
 
-- Step 1 (website/product) - pre-fill from `company.md` value prop / services. Confirm only.
-- Step 2 (current paying users) - pre-fill from extracted ICP segments / personas.
-- Step 5 (firmographics common to best customers) - pre-fill from extracted ICP segments / size band / geo.
-- Step 13 (proof) - pre-fill from extracted proof points.
+| Confidence | Pre-fill these steps | Behavior |
+|---|---|---|
+| `high` | 1, 2, 5, 6, 8, 9, 13 (7 of 14) | Show pre-filled values; user confirms or edits each |
+| `medium` | 1, 2, 5, 13 (4 of 14) | Show pre-filled values; user confirms or edits each |
+| `low` (or no `company.md`) | none | Ask all 14 from scratch |
 
-For each pre-filled step, output: *"From `company.md`: <value>. Confirm, or share an edit."* Adjust the denominator (e.g. `Step 3 / 10` if 4 steps were pre-filled and confirmed in a single batch).
+Step-to-source mapping:
+- **Step 1** (website/product) <- `company.md` value prop
+- **Step 2** (current users) <- `company.md` ICP segments
+- **Step 5** (best customers commonalities) <- `company.md` proof / case studies
+- **Step 6** (bad fit) <- `company.md` constraints / disqualifiers (high-conf only - explicit data needed, low-conf often missing)
+- **Step 8** (job titles, pain) <- `company.md` primary personas (high-conf only)
+- **Step 9** (job titles, budget) <- `company.md` primary personas (high-conf only - guess if not explicit)
+- **Step 13** (proof) <- `company.md` proof points
 
-If `confidence: low`, ignore pre-fill and ask all 14 from scratch.
+For pre-filled steps, render as: *"From `company.md`: <value>. Confirm with `y`, or share an edit."*
+
+Adjust the progress tracker accordingly: `Step X / N` where N = 14 minus skipped count.
 
 **Vague-answer follow-up triggers:**
 
@@ -89,23 +100,19 @@ If `confidence: low`, ignore pre-fill and ask all 14 from scratch.
 
 When triggered, ask one tightening question (e.g. *"Tech is broad - which subset? B2B SaaS, dev tools, fintech, ecommerce platforms?"*), then continue.
 
-### Step A - v2 mode (5-step tightening interview)
+### Step A - v2 mode
 
-If v2 mode triggered in Step 0, ask first:
+**Turn 1 - Acknowledge:**
+*"Generating v2 (tightening). Send your reply data from the last 50-100 sends when ready - which segments responded, which didn't, what objections came up, any new patterns. I'll wait for your message."*
 
-> *Generating v2 (tightening). Share reply data from your last 50-100 sends - which segments responded, which didn't, what objections came up, any new patterns?*
+**Turn 2 (after user pastes):** parse the reply data and run the 5-step tightening interview:
+1. Which segment had the highest reply rate?
+2. Which segment(s) should we drop?
+3. Best new angle that emerged from replies?
+4. New disqualifiers learned?
+5. New trigger events you noticed?
 
-Then run this 5-step flow (one question per message, with 2-3 suggestions each):
-
-| # | Question |
-|---|---|
-| 1 | Which segment had the highest reply rate? |
-| 2 | Which segment(s) should we drop? |
-| 3 | Best new angle that emerged from replies? |
-| 4 | New disqualifiers learned? |
-| 5 | New trigger events you noticed? |
-
-After Step 5, regenerate the 5-section deliverables (Step Z) with the tightened data. Move the existing `icp.md` to `icp.v1.md` before writing the new file with `version: v2`.
+Update `icp.md` to `version: v2`, archive old version as `icp.v1.md`.
 
 ### Step Z - Final deliverables
 
@@ -173,8 +180,13 @@ generated_at: YYYY-MM-DD
 segments: 3
 disqualifiers: <count>
 source: icp-builder-interview
+primary_segment: "<name of segment 1 - the one you'd run a campaign against first>"
+buying_motion: self-serve | demo | both
+campaign: <name>
 ---
 ```
+
+The `primary_segment` and `buying_motion` fields let downstream skills (email-auditor, email-sequence-generator) introspect via frontmatter rather than markdown body parsing. Set `primary_segment` to the name of the first segment card (the one you'd run a campaign against first). Set `buying_motion` from the user's Step 11 answer. Set `campaign` to the campaign name in use.
 
 Versioning rules:
 
@@ -186,18 +198,29 @@ End the run with: *"ICP v1 saved. Run me again after 50-100 sends to generate IC
 
 ## TodoWrite usage
 
-For the 14-step interview, create a TodoWrite list at the start of Step 1 with one todo per question:
+For the 14-step interview, create a TodoWrite list at start with one todo per step that will actually be asked (skipped steps from pre-fill rules don't get a todo). Mark in_progress when asking, completed when answered.
 
-- `Step 1 - website / product`
-- `Step 2 - current paying users`
-- `Step 3 - problem they pay to solve`
-- ... (through Step 14)
-- `Generate deliverables (Step Z)`
-- `Write icp.md`
+**Vague-answer follow-ups don't add a new todo.** The original step stays in_progress until a non-vague answer arrives.
 
-Mark a todo `in_progress` when you ask the question, `completed` when the user answers. Pre-filled steps that the user confirms in one batch can be marked `completed` together. This lets the skill resume mid-interview if context switches.
+**v2 mode TodoWrite list (7 items):**
+1. Capture reply data
+2. Step 1 - highest reply rate segment
+3. Step 2 - drop segments
+4. Step 3 - best new angle
+5. Step 4 - new disqualifiers
+6. Step 5 - new trigger events
+7. Generate v2 deliverables and write icp.md
 
-For v2 mode (5-step flow), use a shorter TodoWrite list with one todo per tightening question + final write.
+This lets the skill resume mid-interview if context switches.
+
+## Abandon and resume
+
+The 14-step interview is conversational. If a user stops mid-interview and returns later, behavior depends on session state:
+
+- **Same session, context still in memory:** TodoWrite tracks step status; resume from the last `in_progress` todo.
+- **New session (no in-memory state):** the partial interview is lost. The user restarts from Step 1, but pre-fill rules from `company.md` shorten the path. No `icp.md` is written until Step Z is reached.
+
+To improve resume support in v0.2: write a `icp.draft.md` after Step 7 (halfway through), with `status: incomplete` frontmatter. On re-invocation, detect the draft and offer to resume or restart.
 
 ---
 
