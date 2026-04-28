@@ -19,3 +19,19 @@
    Expected: audit calls out the targeting mismatch (CTA doesn't match segment buying motion).
 
 3. **History.** Run scenario 1 twice with different emails. Verify `audits/` accumulates 2 files; older audit not overwritten.
+
+4. **Body-only paste (subject fallback).** User pastes:
+
+   ```
+   Hi {First Name},
+
+   Saw you recently expanded your engineering team. We help startups hire 3x faster with our AI-powered ATS. Free for a 10-min call this week?
+
+   Sarah
+   ```
+
+   Expected:
+   - Skill detects no `Subject:` prefix and the first line is a greeting → asks once: *"What's the subject line?"*
+   - User answers: *"Quick question about your hiring process"*
+   - Skill re-runs detection, proceeds with audit.
+   - File written: `audits/2026-04-27-quick-question-about.md` (subject slug uses the supplied subject).
