@@ -13,7 +13,7 @@ The plugin ships six skills: a router that auto-loads on outreach intent, a stra
 The plugin is not on the official Claude Code marketplace yet. Install via the self-hosted GitHub source:
 
 ```bash
-claude marketplace add github:ikigai/saleshandy-superpowers
+claude marketplace add github:saleshandy/outreach-superpower
 claude plugin install saleshandy-superpowers
 ```
 
