@@ -8,6 +8,8 @@ Cold outreach is slow because the inputs are scattered: a website, a vague sense
 
 Every artifact persists to a local workspace folder so each step builds on the last. Destructive Saleshandy operations are gated behind explicit confirmation.
 
+*v0.2 note:* the original v0.1 release was a platform-agnostic URL-to-sequence helper (6 skills). v0.2 broadens scope to a deep Saleshandy power-user companion (12 skills + 5 shared reference docs) covering the full outreach lifecycle. See [CHANGELOG.md](CHANGELOG.md) for the per-skill diff.
+
 ## Install
 
 Install the Saleshandy plugin first (provides the MCP tools that `lead-finder` and `prospect-enrichment` delegate to):
