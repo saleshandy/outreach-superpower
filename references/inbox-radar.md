@@ -79,6 +79,8 @@ Inbox Radar measures cross-provider behavior, not just overall placement:
 | Gmail | Outlook | ... | ... |
 | Gmail | Yahoo | ... | ... |
 
+*(Values populate from live test data; the literal `...` cells indicate columns that haven't been tested yet.)*
+
 A sender may perform well with one recipient provider and poorly with another. Deliverability cannot be generalized across all recipient environments.
 
 **Diagnostic rule:** If one ESP shows 100% Spam and others show 100% Inbox, the problem is provider-specific, not a global reputation issue.

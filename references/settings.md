@@ -53,21 +53,21 @@ The highest-impact page in Settings. Changes here affect **every team member, ev
 |---|---|---|---|
 | **Consider prospect as finished if reply received** | **ON** | When a prospect replies, they're marked Finished and removed from the sequence | **The most impactful toggle in the product.** If OFF, follow-ups continue even after reply. Change only if the use case explicitly requires continuing outreach after reply. |
 | AI Categorization in Unified Inbox | ON | Auto-labels replies (Interested, Not Interested, Meeting Booked, OOO, etc.) | Speeds inbox triage; labels can be wrong - human review still recommended |
-| Track opens for 1:1 emails | Configurable | Counts open events for direct (non-sequence) emails | Inflates open metrics if left on without intent |
-| Track clicks for 1:1 emails | Configurable | Counts click events for direct emails | Same as above |
+| Track opens for 1:1 emails | user-set | Counts open events for direct (non-sequence) emails | Inflates open metrics if left on without intent |
+| Track clicks for 1:1 emails | user-set | Counts click events for direct emails | Same as above |
 | Track external replies | ON | Captures replies from a different address (e.g., assistant replying for the prospect) | Widens reply capture; increases inbox volume |
-| Track same-domain replies | Configurable | Captures internal/same-domain replies (e.g., colleagues forwarding) | Turn OFF for enterprise accounts where internal chatter shouldn't count as prospect replies |
-| Ignore emails from specific domains/emails | - | Suppresses tracking events from listed addresses | Useful for filtering out internal QA/test addresses |
+| Track same-domain replies | user-set | Captures internal/same-domain replies (e.g., colleagues forwarding) | Turn OFF for enterprise accounts where internal chatter shouldn't count as prospect replies |
+| Ignore emails from specific domains/emails | user-set | Suppresses tracking events from listed addresses | Useful for filtering out internal QA/test addresses |
 
 ### Prospect governance
 
 | Toggle | Default | What it does | Downstream effect |
 |---|---|---|---|
 | **Allow adding one prospect in multiple sequences** | **OFF** | When OFF, same email cannot be in two active sequences simultaneously | **Second most impactful toggle.** Turn ON only if the use case explicitly requires parallel outreach. Risk: same prospect gets simultaneous emails from different sequences. |
-| Restrict based on active sequences only | Configurable | When multi-sequence is blocked, whether restriction applies only to ACTIVE or also PAUSED/DRAFT | Affects whether paused-sequence prospects can be re-enrolled |
-| Verify email during CSV import | Configurable | Runs email verification as part of import | Increases import time; reduces bounce risk |
-| Smart re-verification | Configurable | Re-verifies emails previously flagged risky after a set interval | Reduces stale verification; consumes verification credits |
-| Skip interval (days) | - | How many days must pass before re-verification is attempted | Governs verification credit consumption |
+| Restrict based on active sequences only | user-set | When multi-sequence is blocked, whether restriction applies only to ACTIVE or also PAUSED/DRAFT | Affects whether paused-sequence prospects can be re-enrolled |
+| Verify email during CSV import | user-set | Runs email verification as part of import | Increases import time; reduces bounce risk |
+| Smart re-verification | user-set | Re-verifies emails previously flagged risky after a set interval | Reduces stale verification; consumes verification credits |
+| Skip interval (days) | user-set | How many days must pass before re-verification is attempted | Governs verification credit consumption |
 
 ### Lead Finder behavior
 

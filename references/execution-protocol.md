@@ -101,7 +101,7 @@ Classify every incoming request into one of three modes before responding.
 **Format:** Numbered checklist with:
 - Each step in plain language (what will happen, not how)
 - The skill/tool being used (parenthetical, for transparency)
-- Steps requiring confirmation marked with a lock indicator
+- Steps requiring confirmation marked with `[GATED]`
 - Estimated scope/impact where relevant
 
 **Rules:**

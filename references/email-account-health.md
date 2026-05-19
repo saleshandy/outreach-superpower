@@ -236,6 +236,6 @@ Max 100 emails per CSV, 5MB max.
 7. **Provide exact DNS records** when fixing SPF/DKIM/DMARC, not generic instructions. Include exact values for the user's ESP.
 8. **Explain auto-pause clearly** when it happens. Users often don't know what "5 consecutive block bounces" means.
 9. **Check bounce rate during every diagnostic.** Above 3% = investigate. Above 5% = pause immediately.
-10. **Detailed warmup metrics live in TrulyInbox externally** (the Warm-up Dashboard button opens TrulyInbox).
+10. **Detailed warmup metrics live in TrulyInbox externally** (the Warm-up Dashboard button opens TrulyInbox). Send users to TrulyInbox when they ask about per-day warmup volume, conversation thread coverage, or sender reputation metrics that aren't surfaced here.
 11. **Always check if an account is in multiple active sequences** - this is a common cause of problems.
 12. **When allocating accounts to sequences:** healthiest -> highest priority. Warming accounts -> no sequences yet. Reserve pool for new campaigns.

@@ -42,7 +42,7 @@ Set `icp_aware: true` in the audit frontmatter. Use the extracted info during St
 
 | Criterion | What to check |
 |---|---|
-| **Subject Line** | Clear, engaging, relevant; curiosity without clickbait; no spam triggers; personalization present; >5 words; <60 chars |
+| **Subject Line** | Specific enough to convey topic; <60 chars; personalization present when ICP supports it; curiosity without clickbait; no spam triggers |
 | **Opening Line** | Grabs attention; personalized; relevant to recipient's industry/role; avoids "Hope you're doing well" |
 | **Body Copy** | Clear, concise, valuable; recipient-focused (not product-focused); credibility/social proof present; <150-200 words |
 | **Call-to-Action** | Clear next step; encourages reply; binary CTA preferred ("Open to a 10-min call?") |
@@ -54,10 +54,10 @@ Set `icp_aware: true` in the audit frontmatter. Use the extracted info during St
 
 | Criterion | What to check |
 |---|---|
-| **Tone match** | Copy matches the ICP brand voice / segment expectations (professional / conversational / witty / bold / warm). Flag if the copy is bro-y when ICP is enterprise; flag if it's stiff when ICP is creator/SMB. If `icp.md` is absent, infer tone from the copy itself and call out internal inconsistency (e.g., warm opener, aggressive CTA). |
-| **Hook strength** | First-line specificity, relevance, curiosity factor. Score down: "Hope this finds you well," generic "I came across your company," role/title-only references. Score up: named achievement, named pain, named recent event, specific observation. |
-| **Spintax usage** | Count of `{spin}...{endspin}` blocks; presence in high-frequency phrases (greeting, body, sign-off, CTA). Target: minimum 1 in greeting, 2-3 in body, 1 in sign-off. Flag if 0 blocks present (no variant diversity, fails A/Z testing). Flag if variants spin between tonally inconsistent registers (e.g., "Hey" vs "Dear Sir"). |
-| **Word economy** | Body word count. Target <120 for email body (PB-02: 60-100 for opening, 50-70 for follow-up). Score down: unnecessary preamble ("I just wanted to reach out"), filler sentences that don't pass the "So What?" test, sentences >25 words. |
+| **Tone match** | Copy matches the ICP brand voice / segment expectations (professional / conversational / witty / bold / warm). If `icp.md` is absent, infer tone from the copy itself and call out internal inconsistency (e.g., warm opener, aggressive CTA). **Bands:** 1 = register clashes with ICP (bro-y for enterprise, stiff for creator/SMB); 3 = consistent register but generic, not tuned to segment; 5 = register clearly matches ICP brand voice and stays consistent across opener/body/CTA. |
+| **Hook strength** | First-line specificity, relevance, curiosity factor. **Bands:** 1 = generic opener ("Hope this finds you well," "I came across your company"); 3 = relevant but unspecific (role/industry reference without named context); 5 = specifically references the recipient's measurable context (named achievement, named pain, named recent event). |
+| **Spintax usage** | Count of `{spin}...{endspin}` blocks; presence in high-frequency phrases (greeting, body, sign-off, CTA). **Bands:** 1 = zero spin blocks (no variant diversity, fails A/Z testing); 3 = 1-2 blocks present but missing from high-frequency phrases; 5 = >=3 blocks covering greeting, body, and sign-off/CTA, with tonally consistent variants. |
+| **Word economy** | Body word count. Target <120 for email body (PB-02: 60-100 for opening, 50-70 for follow-up). **Bands:** 1 = body >150 words with preamble and filler sentences (>25 words each); 3 = within range but contains 1-2 lines that fail the "So What?" test; 5 = within range, every sentence earns its place, no preamble. |
 
 **ICP-aware adjustments (only if icp.md was loaded):**
 - **Personalization & Human Touch:** weight against segment fit. Flag if email targets generic "founders" when ICP says "VP Engineering at Series A SaaS."
@@ -116,6 +116,7 @@ If the email has 3+ red flags, recommend the user run an Inbox Radar test before
 | Hook strength | X/5 | ... |
 | Spintax usage | X/5 | ... |
 | Word economy | X/5 | ... |
+| **Overall** | **X/55** | **Structural X/35 + Craft X/20** |
 
 ### Deliverability red flags
 - (list from Step 3c, or "No red flags detected" if clean)

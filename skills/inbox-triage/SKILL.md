@@ -34,7 +34,7 @@ Default campaign: `default`. If user invocation includes `--campaign <name>`, us
 1. **`reply_to_email` requires explicit per-message confirmation.** The user must type `send #N` (or equivalent) for every individual reply before that MCP call is made. No exceptions.
 2. **No bulk reply, ever.** Bulk approval like `send all` is not honored - the skill must walk the user through one reply at a time. The user can type `skip` or `next` to move on quickly, but cannot pre-approve a batch.
 3. **Never reply to "not-interested," "unsubscribe," or hostile messages.** Mark and log. For unsubscribe, recommend the user remove the prospect from all sequences (handled by `crm-operations`).
-4. **Respect the 90-day inbox retention.** If the user asks about replies older than 90 days, explain Saleshandy only retains 90 days of inbox history and the data is no longer available.
+4. **Respect the 90-day inbox retention** (Saleshandy default; user may configure retention in settings). If the user asks about replies older than 90 days, explain Saleshandy only retains 90 days of inbox history and the data is no longer available.
 5. **Sign from the sending account.** Replies go out from the same account that sent the original sequence email. Do not change the from-address.
 6. **Log every decision, even skips.** An entry in `inbox-log.md` for `skipped (not-now)` is just as important as one for `sent`. The log is the source of truth for what was decided.
 

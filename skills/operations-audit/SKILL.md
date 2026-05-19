@@ -103,7 +103,7 @@ For each account in scope:
 | Warmup status | Must be `Complete` AND setup score 80+ for cold sends. `Stopped`/`Paused`/`Active (Day X/21)` with active campaigns -> P0. | P0 if cold campaigns running on un-warmed account |
 | Warmup reply rate | Target 30%+. Below 20% -> P1 (reputation problem). | P1 |
 | Bounce rate (last 30 days) | <1% strong, 1-2% average, 2-3% needs attention, >3% P0 pause. | P0 if >3%, P1 if 2-3% |
-| Spam complaint rate | <0.05% strong, 0.05-0.1% average, >0.1% P1, >0.3% P0. | P0 if >0.3%, P1 if 0.1-0.3% |
+| Spam complaint rate | <0.05% strong, 0.05-0.1% average, >0.1% P1, >0.3% P0 (Gmail/Outlook industry standard). | P0 if >0.3%, P1 if 0.1-0.3% |
 | Daily volume vs ESP cap | Per `email-account-health.md` daily limits table. >cap -> P0. >recommended -> P1. | P0 if >cap |
 | Account in multiple active sequences | Recommended: each account in ONE active sequence. Violations -> P2. | P2 |
 | 5-bounce auto-pause rule | If any account auto-paused, surface immediately - investigate content/DNS/list. | P0 |
@@ -168,7 +168,7 @@ For each active sequence (and each step within it), scan for:
 | Links in first email (step 1) | >0 links -> P1, remove or move to step 2+. | P1 |
 | Open tracking enabled on cold sequences | -> P2 recommend off (pixel hurts placement, data unreliable). | P2 |
 | Click tracking enabled on cold sequences | -> P2 recommend off. | P2 |
-| Missing merge tag fallbacks (e.g., `{{First Name}}` with no `\|'there'`) | -> P2. | P2 |
+| Missing merge tag fallbacks (e.g., `{{First Name}}` with no fallback like `{{First Name|there}}`) | -> P2. | P2 |
 
 Don't critique copy quality at the headline/hook level - that's `email-auditor`'s job. This phase is structural / deliverability-oriented only. If the user wants creative critique, recommend running `email-auditor` against each step.
 
