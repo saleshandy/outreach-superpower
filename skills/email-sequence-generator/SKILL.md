@@ -27,6 +27,7 @@ Build a psychology-driven, multichannel outreach sequence (email + LinkedIn + ca
 - `references/inbox-radar.md` - deliverability red flags to avoid in copy (spam words, content patterns that hurt placement).
 - `references/email-account-health.md` - sender capacity, account-warmup gating, recommended daily volume per sender.
 - `references/execution-protocol.md` - Understand -> Plan -> Confirm -> Execute -> Verify loop.
+- `references/industry-tone.md` - industry-specific lead-with / proof-style / CTA conventions (SaaS, Lead Gen, Digital Marketing, Recruitment, PR, E-commerce). Consulted in Phase 5.
 
 ## Hard rules
 
@@ -156,6 +157,8 @@ Adapt all copy to selected tone. If user opts out of emojis, replace emoji-depen
 | Autonomy | Later CTAs | Give permission to say no - "1, 2, or 3?" |
 | IKEA Effect | Mid-sequence | Ask for their input - "am I wrong about this?" |
 | Pratfall Effect | Mid-late opener | Strategic small flaw - "I've rewritten this 4 times" |
+
+If your ICP is in a specific industry, check `references/industry-tone.md` for lead-with / proof-style / CTA conventions (SaaS, Lead Gen, Digital Marketing, Recruitment, PR, E-commerce) before selecting a hook framework.
 
 **Hook frameworks (subject + opener):**
 
