@@ -18,6 +18,25 @@ Default campaign: `default`. If user invocation includes `--campaign <name>`, us
 
 All file reads/writes happen in `outreach-workspace/<campaign>/`.
 
+## References
+
+- `references/execution-protocol.md` - Understand -> Plan -> Confirm -> Execute -> Verify loop. The 14-step interview itself is the Plan + Confirm; Step Final is Execute; Step 15 ratifies the search-ready filter block before downstream skills consume it.
+
+## ICP framework (PB-10 lens)
+
+The 14-step interview captures the segment's pain, outcome, and angle. Behind the scenes, every segment must resolve into four filter layers downstream tools (`lead-finder`, Saleshandy Lead Finder, LinkedIn Sales Nav) can actually filter on:
+
+| Layer | What it answers | Captured in steps |
+|---|---|---|
+| **Firmographics** | Industry, employee range, revenue range, HQ country, funding stage | Steps 5, 10 |
+| **Technographics** | Tools they use today / don't use (competitor signals, stack tells) | Steps 5, 12 |
+| **Behavioral triggers** | Recent events that change buying urgency (hired VP X, raised round, launched product) | Step 7 |
+| **Intent signals** | What they're reading / engaging with that hints at active interest | Step 7, optionally Step 14 |
+
+Tighten vague replies on these dimensions during the interview. "SaaS" is not firmographics until you ask back-end size + revenue + geo. "They use HubSpot" is technographics. "Just raised Series B" is a trigger. "Downloading cold email content" is intent.
+
+The final Step 15 emits these four layers as a structured YAML block downstream skills consume. Empty layers are allowed.
+
 ## Operating rules
 
 1. **One question per message.** Never bundle multiple questions in one turn.
@@ -97,8 +116,11 @@ Adjust the progress tracker accordingly: `Step X / N` where N = 14 minus skipped
 - Single-word industry replies ("SaaS", "tech", "agencies")
 - Replies that don't include any number, role, or specific descriptor
 - Replies under 5 words on Steps 3, 4, 5, 7, 8, 9
+- **Step 5 (firmographics):** if reply lacks size + revenue + geo, ask back. *"Got the industry. What employee range, what revenue band, and which geos?"*
+- **Step 7 (why now / triggers):** if reply is generic ("they need it"), probe for a real event - *"Trigger events look like: just hired a VP X, raised funding in last 90 days, launched a product, did a layoff, switched a competitor. Any of those fit your best customers?"*
+- **Step 12 (competitors / tech stack):** if user names a competitor by category not product, probe - *"Got it - which specific tools? HubSpot, Salesforce, Outreach.io? That's the technographic signal we'll filter on."*
 
-When triggered, ask one tightening question (e.g. *"Tech is broad - which subset? B2B SaaS, dev tools, fintech, ecommerce platforms?"*), then continue.
+When triggered, ask one tightening question, then continue.
 
 ### Step A - v2 mode
 
@@ -169,6 +191,86 @@ After the last interview question, output **all five sections in chat AND write 
 
 Every segment must pass the test: *"Can I find these people with filters in Saleshandy/LinkedIn?"* If not, tighten before writing.
 
+### Step 15 - Search-ready filters
+
+After Step Z confirms the ICP body, draft a structured YAML filter block for the **primary segment**. This is what `lead-finder` reads to formulate Lead Finder / Sales Nav queries.
+
+Walk the user through it section by section. Confirm each section before moving to the next. Empty sub-keys are allowed (e.g. `technographics: {}` if no signals exist).
+
+**Turn 1 - Firmographics:** show the drafted block from the interview answers (Steps 5, 10):
+
+```yaml
+firmographics:
+  industries: [SaaS, Fintech]            # from Step 5
+  employee_range: [51, 500]              # ask if not captured: "Tightest employee range you'd accept?"
+  revenue_range_usd: [1000000, 50000000] # from Step 10 if numeric; else ask
+  hq_countries: [US, UK, DE]             # ask if missing: "Which countries / regions?"
+  funding_stages: [Series A, Series B]   # optional - only if relevant
+```
+
+Ask: *"This is the firmographics block I'd hand to `lead-finder`. Confirm, edit any line, or say `skip` to leave empty."* Apply edits, re-display, loop until `yes`.
+
+**Turn 2 - Technographics:** from Step 12 (competitors / current stack):
+
+```yaml
+technographics:
+  uses: [HubSpot, Salesforce]    # tools that signal good fit (competitor switching opportunity)
+  not_uses: [Outreach.io]        # tools that disqualify (already solved problem with them)
+```
+
+If user has no technographic signals: `technographics: {}`. Confirm, then proceed.
+
+**Turn 3 - Behavioral triggers:** from Step 7. List as snake_case event identifiers:
+
+```yaml
+behavioral_triggers:
+  - hired_VP_Sales_last_90_days
+  - raised_funding_last_180_days
+  - launched_new_product_last_60_days
+```
+
+Format: `<event>_<window>` so they're filterable. Empty list allowed.
+
+**Turn 4 - Intent signals:** content / activity hints that suggest active interest. From Steps 7 and 14:
+
+```yaml
+intent_signals:
+  - downloaded_cold_email_content
+  - active_on_LinkedIn_outbound_topics
+  - hiring_for_SDR_or_BDR_role
+```
+
+Empty list allowed if user has no signals.
+
+**Turn 5 - Final block confirmation:** show the assembled YAML in a code block:
+
+````markdown
+## Search-ready filters
+
+```yaml
+firmographics:
+  industries: [SaaS, Fintech]
+  employee_range: [51, 500]
+  revenue_range_usd: [1000000, 50000000]
+  hq_countries: [US, UK, DE]
+  funding_stages: [Series A, Series B]
+
+technographics:
+  uses: [HubSpot, Salesforce]
+  not_uses: [Outreach.io]
+
+behavioral_triggers:
+  - hired_VP_Sales_last_90_days
+  - raised_funding_last_180_days
+
+intent_signals:
+  - downloaded_cold_email_content
+  - active_on_LinkedIn_outbound_topics
+```
+````
+
+Ask: *"Confirm? Type `yes` to write to `icp.md`, or paste line edits."* Loop until confirmation. This block goes at the end of `icp.md` body, after Disqualifiers.
+
 ### Step Final - Write file
 
 Write `outreach-workspace/<campaign>/icp.md`. Frontmatter:
@@ -188,17 +290,19 @@ campaign: <name>
 
 The `primary_segment` and `buying_motion` fields let downstream skills (email-auditor, email-sequence-generator) introspect via frontmatter rather than markdown body parsing. Set `primary_segment` to the name of the first segment card (the one you'd run a campaign against first). Set `buying_motion` from the user's Step 11 answer. Set `campaign` to the campaign name in use.
 
+**Body order:** ICP Summary -> Segment Cards -> Targeting Filters -> Angle Kit -> Disqualifiers -> `## Search-ready filters` (YAML block from Step 15).
+
 Versioning rules:
 
 - v1 fresh write -> just create `icp.md`.
 - v2 -> first move existing `icp.md` to `icp.v1.md`, then write the new v2 file.
 - Lite-upgrade -> move existing lite `icp.md` to `icp.lite.v1.md` first, then write the new full v1 file with `source: icp-builder-interview`.
 
-End the run with: *"ICP v1 saved. Run me again after 50-100 sends to generate ICP v2."*
+End the run with: *"ICP v1 saved with structured filter block. Next: run `lead-finder` to turn these filters into a verified prospect list. (Re-run me after 50-100 sends to generate ICP v2.)"*
 
 ## TodoWrite usage
 
-For the 14-step interview, create a TodoWrite list at start with one todo per step that will actually be asked (skipped steps from pre-fill rules don't get a todo). Mark in_progress when asking, completed when answered.
+For the interview, create a TodoWrite list at start with one todo per step that will actually be asked (skipped steps from pre-fill rules don't get a todo) PLUS one todo for "Step 15 - confirm search-ready filter block (4 turns)". Mark in_progress when asking, completed when answered.
 
 **Vague-answer follow-ups don't add a new todo.** The original step stays in_progress until a non-vague answer arrives.
 
@@ -224,4 +328,4 @@ To improve resume support in v0.2: write a `icp.draft.md` after Step 7 (halfway 
 
 ---
 
-*Run me again after 50-100 sends to generate ICP v2.*
+*Next: run `lead-finder` to turn the search-ready filters into a verified prospect list. Re-run me after 50-100 sends to generate ICP v2.*
