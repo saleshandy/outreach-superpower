@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.2.0 - 2026-05-19
+
+### Added
+- 6 new skills: `lead-finder`, `prospect-enrichment`, `inbox-triage`, `operations-audit`, `analytics-interpreter`, `crm-operations`
+- 5 shared reference docs in `references/`: `execution-protocol.md`, `inbox-radar.md`, `email-account-health.md`, `settings.md`, `industry-tone.md`
+- Multichannel support in `email-sequence-generator` (email + LinkedIn + call + WhatsApp + custom tasks)
+- Search-ready filter block emitted by `icp-builder` Step 15 (consumed by `lead-finder`)
+- New workspace files: `leads.md`, `enrichment-plan.md`, `inbox-log.md`, `audit-YYYY-MM-DD.md`, `analytics-snapshot-YYYY-MM-DD.md`, `crm-actions.md`
+
+### Changed
+- `email-sequence-generator`: full rewrite using PB-01 8-phase architecture + PB-02 psychology layer
+- `icp-builder`: PB-10 ICP framework (firmographics/technographics/behavioral/intent) woven into existing 14 steps + new Step 15 for search-ready filter block
+- `email-auditor`: expanded to 11 dimensions (7 structural + 4 craft) + deliverability red flag scan from `inbox-radar.md`
+- `using-outreach-superpower` (router): 3-mode execution protocol, phase awareness (pre-launch vs post-launch), 6 new routing entries, prerequisite chaining for new skills
+
+### Notes
+- Plugin identity broadened from platform-agnostic URL-to-sequence to deep Saleshandy power-user companion
+- All destructive Saleshandy MCP operations gated behind explicit user confirmation (per-message for replies; per-batch + typed-name for sequence deletes/status-changes)
+- See `docs/plans/2026-05-19-outreach-superpower-expansion-design.md` in the parent repo for the full design rationale
+
 ## 0.1.0 - 2026-04-27
 
 ### Added

@@ -1,7 +1,7 @@
 {
   "name": "outreach-superpower",
-  "description": "AI-powered outreach toolkit for SDRs, AEs, and founders. Build ICPs, productize services, generate cold email sequences, and audit your outreach copy. Built by Saleshandy.",
-  "version": "0.1.0",
+  "description": "Deep Saleshandy power-user companion for outreach: build ICP, find leads, enrich, write sequences, audit copy, triage inbox, monitor deliverability, interpret analytics, and manage CRM. 12 skills, 5 shared reference docs.",
+  "version": "0.2.0",
   "author": {
     "name": "Ikigai Infotech",
     "email": "dhruv@ikigai.co.in"
@@ -9,5 +9,5 @@
   "homepage": "https://github.com/saleshandy/outreach-superpower",
   "repository": "https://github.com/saleshandy/outreach-superpower",
   "license": "MIT",
-  "keywords": ["sales", "outreach", "cold-email", "sdr", "ae", "icp", "saleshandy"]
+  "keywords": ["sales", "outreach", "cold-email", "sdr", "ae", "icp", "saleshandy", "saleshandy-companion", "prospecting", "deliverability"]
 }
