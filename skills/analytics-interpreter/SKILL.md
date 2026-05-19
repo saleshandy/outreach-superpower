@@ -83,6 +83,8 @@ An anomaly meets ANY of these conditions:
 - relative change > 20% in either direction, OR
 - current value crosses a benchmark band (e.g., open rate fell from "good" 35-50% into "needs attention" 20-35%).
 
+**Absolute-delta floor.** To suppress false positives on low-base-rate metrics (a 1-stddev change in a 0.1% unsubscribe rate is noise, not signal), suppress anomalies where the absolute delta is below: bounce 0.5pp, unsubscribe 0.3pp, click 0.5pp, open 2pp, reply 0.5pp (pp = percentage points). The relative threshold still applies for changes above the floor.
+
 **Direction matters.** A drop in opens is an anomaly. A spike in opens is also an anomaly (could be a deliverability shift, a fixed bug, or a tracking pixel issue worth understanding).
 
 ### Step 5 - Apply diagnostic logic

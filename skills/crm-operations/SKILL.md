@@ -103,7 +103,7 @@ Side effects:
 Type "yes, proceed" to execute, or describe the change you want.
 ```
 
-A response that is not literally "yes, proceed" (or "yes proceed" / "proceed yes") does NOT pass. "Sure" or "ok" or "do it" do not pass. State this expectation in the card.
+A response that is not literally "yes, proceed" or "yes proceed" (with or without the comma) does NOT pass. "Sure" or "ok" or "do it" or any other phrasing does not pass. State this expectation in the card.
 
 ### Class 4: Destructive (HIGHEST-RISK, typed sequence-name confirmation)
 
@@ -177,7 +177,7 @@ If a user asks for one of these, route them: *"That's out of scope for crm-opera
 
 ### Step 1 - Classify the request
 
-Identify which operation class fires. If ambiguous (e.g., "delete prospects who haven't opened in 90 days" could be DNC, hard delete, or sequence removal), ask one scoping question: *"To confirm: do you want to (A) hard-delete these prospects from CRM, (B) mark them DNC and stop all future outreach, or (C) just remove them from this sequence?"*
+Identify which operation class fires. If ambiguous (e.g., "delete prospects who haven't opened in 90 days" could mean DNC or sequence removal), ask one scoping question: *"To confirm: do you want to (A) hard-delete from CRM: not available through this skill. The safest equivalent is (B) DNC + remove from sequences, which I can run as two separately gated ops. So: (B) mark them DNC and stop all future outreach, or (C) just remove them from this sequence?"* Option (A) is surfaced only to acknowledge user intent, then immediately redirected to (B). Never present (A) as executable.
 
 ### Step 2 - Pull current state (read before write)
 
@@ -194,6 +194,8 @@ Based on the operation class, present the matching confirmation card. Wait for t
 ### Step 4 - Execute
 
 After the gate passes, call the MCP tool. Surface the response. If it returns an error, log to `crm-actions.md` with status `errored` and the error text; surface to the user; do not retry without explicit instruction.
+
+**Count drift.** The displayed count in the confirmation card is a pre-call estimate. The post-call returned count is what gets logged - never the pre-call estimate. If the post-call count diverges by more than 5% from the displayed count, log status `partial` and surface the diff so the user can reconcile.
 
 ### Step 5 - Append to `crm-actions.md`
 
@@ -240,7 +242,7 @@ note: append-only audit log of every destructive CRM operation. Never overwrite.
 - **Scope** - filter / target / sequence name.
 - **Count** - records affected.
 - **Confirmation evidence** - exactly what the user typed to pass the gate.
-- **Status** - `success`, `errored`, or `aborted`.
+- **Status** - `success`, `errored`, `aborted`, `partial` (count diverged >5% from display), or `unknown` (MCP timeout).
 - **Notes** - reason, error text, or context.
 
 ## Common task flows
@@ -286,17 +288,16 @@ User: *"Delete the Q2 Outbound sequence."*
 5. If match: call `delete_sequence`. Log success.
 6. If mismatch: prompt once more. If still wrong or cancel: log `aborted`, do nothing.
 
-### Flow E - "Delete all prospects who haven't opened in 90 days" (ambiguous, then Class 4)
+### Flow E - "Delete all prospects who haven't opened in 90 days" (ambiguous, then redirect)
 
 User: *"Delete all prospects who haven't opened in 90 days."*
 
-1. **Disambiguate first.** *"To confirm: do you want to (A) hard-delete these prospects from CRM, (B) mark them DNC and stop all future outreach, or (C) remove them from current sequences only?"*
+1. **Disambiguate first.** *"To confirm: (A) hard-delete from CRM is not available through this skill. The safest equivalent is (B) DNC + remove from sequences, which I can run as two separately gated ops. So: do you want (B) mark them DNC and stop all future outreach, or (C) remove them from current sequences only?"* Option (A) is acknowledged then immediately redirected. It is never selectable for execution.
 2. Read prospect count via filter. Suppose: 1,847 prospects match.
 3. Apply the matching gate:
-   - For (A) hard-delete: the operation is destructive at scale. Show count + sample of 5 + impact ("permanently removes records from CRM, including all engagement history"). Require typed confirmation matching the filter description (e.g., "yes, delete 1847 prospects with no opens in 90 days").
    - For (B) DNC: bulk-write class with "yes, proceed" gate. Show count + sample + compliance reminder.
    - For (C) remove from sequences: typed sequence-name confirmation per affected sequence (could be multiple).
-4. **Never chain.** If the user picks (A) AND (B), run two separate gates back-to-back.
+4. **Never chain.** If the user wants both (B) AND (C), run two separate gates back-to-back.
 
 ### Flow F - "Pause the underperforming sequence" (Class 4)
 
@@ -322,3 +323,5 @@ User: *"Delete all prospects who haven't opened in 90 days."*
 - **User asks "what destructive ops have I run today?":** read `crm-actions.md`, filter to today's UTC date, summarize. This is a read op on a workspace file, not on Saleshandy data; no MCP call needed.
 - **`crm-actions.md` doesn't exist yet:** create it on first append. Seed with the header block.
 - **`crm-actions.md` has been manually edited:** detect by checking for any row with a missing column. Surface a warning *"The audit log appears to have been edited outside this skill. Continuing to append, but be aware history may be incomplete."* Still append the new row. Never refuse to write because of a malformed prior row.
+- **Bulk MCP call returns a count more than 5% different from the displayed count:** log status `partial` and surface the diff so the user can reconcile (e.g., *"Displayed 83 prospects, MCP returned 76 affected (-8%). Likely cause: new DNCs or sequence-state changes between display and execution."*). Do NOT retry automatically. The post-call returned count is what gets logged, not the pre-call estimate.
+- **MCP timeout on a bulk or destructive call:** log status `unknown` with the timeout marker. Do NOT retry. Recommend the user inspect Saleshandy directly to confirm whether the operation committed before re-running.
