@@ -7,7 +7,7 @@
   "plugins": [
     {
       "name": "outreach-superpower",
-      "source": ".",
+      "source": "./",
       "description": "AI-powered outreach toolkit for SDRs, AEs, and founders. Build ICPs, productize services, generate cold email sequences, and audit your outreach copy.",
       "version": "0.1.0",
       "author": {
